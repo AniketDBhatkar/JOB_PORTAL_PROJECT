@@ -140,14 +140,10 @@ export const updateProfile=async(req,res)=>{
     try{
 
      const {fullName,email,phoneNumber,bio,skills}=req.body;
-     if(!fullName || !email || !phoneNumber || !bio ||!skills){
-        return res.status(400).json({
-            message:"something is missing",
-            success:false,
-        })
+     let skillsArray;
+     if(skills){
+         skillsArray=skills.split(",");   
      }
-
-     const skillsArray=skills.split(",");
      const userId=req.id;
      let user=await User.findById(userId);
      if(!user){
@@ -157,11 +153,11 @@ export const updateProfile=async(req,res)=>{
         })
      }
 
-     user.fullName=fullName,
-     user.email=email,
-     user.phoneNumber=phoneNumber,
-     user.profile.bio=bio,
-     user.profile.skills=skillsArray
+     if(fullName) user.fullName=fullName
+     if(email) user.email=email
+     if(phoneNumber)user.phoneNumber=phoneNumber
+     if(bio)user.profile.bio=bio
+     if(skills)user.profile.skills=skillsArray
 
      await user.save();
 
